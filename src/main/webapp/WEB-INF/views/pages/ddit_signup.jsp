@@ -40,39 +40,39 @@
                   <p class="mb-0">회원등록 후, 저희 서비스와 함께해요!</p>
                 </div>
                 <div class="card-body">
-                  <form role="form">
+                  <form role="form" id="signupForm" action="/singin.do" method="post">
                     <div class="input-group input-group-outline mb-3">
-                      <label class="form-label">아이디</label>
-                      <input type="text" class="form-control">
+                      <label class="form-label"></label>
+                      <input type="text" id="mem_Id" placeholder="아이디" name="mem_Id" class="form-control">
                     </div>
                     <div class="input-group input-group-outline mb-3">
-                      <label class="form-label">비밀번호</label>
-                      <input type="text" class="form-control">
+                      <label class="form-label"></label>
+                      <input type="text" id="mem_Pw"name="mem_Pw" placeholder="비밀번호" class="form-control">
                     </div>
                     <div class="input-group input-group-outline mb-3">
-                      <label class="form-label">비밀번호 재입력</label>
-                      <input type="text" class="form-control">
+                      <label class="form-label"></label>
+                      <input type="text" id="mem_Pw2" placeholder="비밀번호 재입력" class="form-control">
                     </div>
 					<div class="input-group input-group-outline mb-3">
-                      <label class="form-label">이름</label>
-                      <input type="text" class="form-control">
+                      <label class="form-label"></label>
+                      <input type="text" id="mem_Name" placeholder="이름" name="mem_Name" class="form-control">
                     </div>
 					<div class="form-check mb-3">
-					  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1" value="M" checked>
+					  <input class="form-check-input gender" name="mem_Gender"  type="radio" name="flexRadioDefault" value="M" checked>
 					  <label class="custom-control-label" for="customRadio1">남자</label>
-					  <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1" value="F">
+					  <input class="form-check-input gender" name="mem_Gender"  type="radio" name="flexRadioDefault" value="F">
 					  <label class="custom-control-label" for="customRadio1">여자</label>
 					</div>
 					<div class="input-group input-group-outline mb-3">
-                      <label class="form-label">핸드폰번호</label>
-                      <input type="text" class="form-control">
+                      <label class="form-label"></label>
+                      <input type="text" id="mem_Phone" name="mem_Phone" placeholder="핸드폰번호" class="form-control">
                     </div>
 					<div class="input-group input-group-outline mb-3">
-                      <label class="form-label">이메일</label>
-                      <input type="text" class="form-control">
+                      <label class="form-label"></label>
+                      <input type="text" id="mem_Email" name="mem_Email" placeholder="이메일"  class="form-control">
                     </div>
                     <div class="form-check form-switch">
-					  <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked="">
+					  <input class="form-check-input" type="checkbox" name="mem_Agree"  id="mem_Agree" >
 					  <label class="form-check-label" for="flexSwitchCheckDefault">개인정보 동의</label>
 					  <p class="mb-2 text-sm mx-auto">
 						개인정보 동의  
@@ -82,7 +82,7 @@
 					  </p>
 					</div>
                     <div class="text-center">
-                      <button type="button" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">가입하기</button>
+                      <button type="button" id="signUpBtn" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">가입하기</button>
                     </div>
                   </form>
                 </div>
@@ -100,8 +100,88 @@
     </section>
   </main>
   <!--   Core JS Files   -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 </body>
+
+<script type="text/javascript">
+
+$(function(){
+	
+	if("${flag}" == "missing"){
+		alert("누락된 입력 정보가 존재합니다.")
+	}
+	
+	if("${flag}" == "error"){
+		alert("회원가입 실패!")
+	}
+	
+	$("#signUpBtn").on("click", function(){
+		mem_Id = $("#mem_Id").val();
+		mem_Pw = $("#mem_Pw").val();
+		mem_Pw2 = $("#mem_Pw2").val();
+		mem_Name = $("#mem_Name").val();
+		mem_Phone = $("#mem_Phone").val();
+		mem_Email = $("#mem_Email").val();
+		mem_Agree = $("#mem_Agree");
+			
+			
+		if(mem_Id == ""){
+			alert("아이디를 입력해주세요");
+			$("#mem_Id").focus();
+			return false;
+		}
+		if(mem_Pw == ""){
+			alert("비밀번호를 입력해주세요");
+			$("#mem_Pw").focus();
+			return false;
+		}
+			
+		if(mem_Pw2 == ""){
+			alert("비밀번호 재입력을 입력해주세요");
+			$("#mem_Pw2").focus();
+			return false;
+		}
+		
+		if(mem_Pw2 != mem_Pw){
+			alert("비밀번호가 같지 않습니다.");
+			return false;
+		}
+			
+		if(mem_Name == ""){
+			alert("이름을 입력해주세요");
+			$("#mem_Name").focus();
+			return false;
+		}
+			
+		if(mem_Phone == ""){
+			alert("‘핸드폰번호를 입력해주세요");
+			$("#mem_Phone").focus();
+			return false;
+		}
+			
+		if(mem_Email == ""){
+			alert("이메일을을 입력해주세요");
+			$("#mem_Email").focus();
+			return false;
+		}
+		
+		if(!mem_Agree.is(':checked')){
+			alert("개인정보 동의를 체크해주세요");
+			return false;
+		}
+			
+		$("#signupForm").submit()
+	})
+	
+
+		
+	})
+	
+	
+	
+</script>
+
+
 
 </html>

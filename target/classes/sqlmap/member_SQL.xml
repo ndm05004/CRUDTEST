@@ -6,4 +6,30 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
   
-<mapper namespace="Black"></mapper>
+<mapper namespace="member">
+	
+	<insert id="memSignup" parameterType="memberVO">
+	insert into member(
+		mem_no,
+		mem_id,
+		mem_pw,
+		mem_name,
+		mem_gender,
+		mem_phone,
+		mem_email,
+		mem_agree
+		)
+		values(
+		seq_member.nextval, #{mem_Id}, #{mem_Pw}, #{mem_Name}, 
+		#{mem_Gender}, #{mem_Phone}, #{mem_Email}, #{mem_Agree}
+		)
+	</insert>
+	
+	<select id="memLogin" parameterType="memberVO" resultType="int">
+		select count(*)
+		from member
+		where mem_id = #{mem_Id} and mem_pw = #{mem_Pw}
+	</select>
+	
+
+</mapper>

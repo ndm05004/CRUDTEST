@@ -139,7 +139,7 @@ public class PaginationInfoVO<T> {
 	      StringBuffer html = new StringBuffer();
 	      
 	      // 부트스트랩을 이용하던 여러 css요소를 이용해서 페이징 UI를 구현하는 곳입니다!
-	      html.append("<ul class='pagination pagination-sm m-0 float-right'>");
+	      html.append("<ul class='pagination justify-content-center'>");
 
 	      if(startPage > 1) {
 	      html.append("<li class='page-item'><a href='' class='page-link' data-page='"

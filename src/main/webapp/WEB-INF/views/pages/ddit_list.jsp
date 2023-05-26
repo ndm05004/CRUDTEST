@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -71,8 +72,8 @@
 			<li class="nav-item d-flex align-items-center">　</li>
 			<li class="nav-item d-flex align-items-center">
 				<div class="d-flex flex-column justify-content-center">
-				  <h6 class="mb-0 text-sm">304호반장</h6>
-				  <p class="text-xs text-secondary mb-0">Leader-Park@ddit.or.kr</p>
+				  <h6 class="mb-0 text-sm">${memberVO.mem_Id}</h6>
+				  <p class="text-xs text-secondary mb-0">${memberVO.mem_Email}</p>
 				</div>
 			</li>
 			<li class="nav-item d-flex align-items-center">　</li>
@@ -101,6 +102,8 @@
 				<div class="col-md-6">
 				
 				</div>
+				
+				
 				<div class="col-md-1">
 				  <div class="input-group input-group-static mb-4">
 					 <select class="form-control" id="exampleFormControlSelect1">
@@ -109,6 +112,9 @@
 					 </select>
 				   </div>
 				</div>
+				
+				
+				
 				<div class="col-md-3">
 				  <div class="ms-md-auto">
 					<form class="input-group input-group-outline">
@@ -120,6 +126,8 @@
 				<div class="col-md-2">
 				  <button type="button" class="btn btn-outline-secondary">검색</button>
 				</div>
+				
+				
 			  </div>
 			</div>
             <div class="card-body px-0 pb-2">
@@ -134,26 +142,40 @@
                       <th width="6%" class="text-dark font-weight-bolder">조회수</th>
                     </tr>
                   </thead>
-                  <tbody>
-					<tr class="text-center">
-					  <td colspan="5" class="text-dark font-weight-bolder">조회하신 게시글이 존재하지 않습니다.</td>
-					</tr>
-                    <tr class="text-center">
-                      <td>1</td>
-                      <td class="text-dark">304호 여러분 반장입니다! 공지할게요!</td>
-                      <td>작성자</td>
-                      <td>
-                        <span class="text-dark text-xs font-weight-bold">2023-03-16 14:20</span>
-                      </td>
-					  <td>
-                        <span class="text-dark text-xs font-weight-bold">1450</span>
-					  </td>
-                    </tr>
-                  </tbody>
+                  
+                  	<c:set value = "${pagingVO.dataList }" var="boardList"/>
+					<c:choose>
+						<c:when test="${empty boardList }">
+		                  <tbody>
+							<tr class="text-center">
+							  <td colspan="5" class="text-dark font-weight-bolder">조회하신 게시글이 존재하지 않습니다.</td>
+							</tr>
+						   </tbody>
+					   </c:when>
+					   <c:otherwise>
+							<c:forEach items="${boardList }" var="board">
+								<tr id="${board.boNo }">
+									<td>${board.boNo }</td>
+									
+									<td><a href="/board/detail.do?boNo=${board.boNo }">
+										${board.boTitle }
+									</a></td>
+									<td>${board.boWriter }</td>
+									<td>${board.boDate }</td>
+									<td>${board.boHit }</td>
+								</tr>								
+							</c:forEach>
+					   </c:otherwise>
+					</c:choose>
+
                 </table>
               </div>
             </div>
-			<nav aria-label="Page navigation example">
+           <div class="card-footer clearfix" id="pagingArea">
+				${pagingVO.pagingHTML }
+									
+			</div>
+<!-- 			<nav aria-label="Page navigation example">
 			  <ul class="pagination justify-content-center">
 				<li class="page-item disabled">
 				  <a class="page-link" href="javascript:;" tabindex="-1">
@@ -175,7 +197,7 @@
 				  </a>
 				</li>
 			  </ul>
-			</nav>
+			</nav> -->
           </div>
         </div>
       </div>

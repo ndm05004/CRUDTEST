@@ -7,10 +7,10 @@ import lombok.Data;
 @Data
 public class BoardVO {
 	
-	private int bono;
-	private String botitle;
-	private String bocontent;
-	private String bowriter;
-	private Date bodate;
-	private int bohit;
+	private int boNo;		
+	private String boTitle; 
+	private String boWriter;
+	private String boContent;
+	private String boDate;  
+	private int boHit;      
 }

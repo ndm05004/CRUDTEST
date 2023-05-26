@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -37,19 +38,19 @@
                 </div>
               </div>
               <div class="card-body">
-                <form role="form" class="text-start">
+                <form role="form" id="loginForm" action="/pages/list.do" class="text-start", method="post">
                   <div class="input-group input-group-outline my-3">
-                    <input type="email" class="form-control" placeholder="아이디">
+                    <input type="email" id="id" name="mem_Id" class="form-control" placeholder="아이디">
                   </div>
                   <div class="input-group input-group-outline mb-3">
-                    <input type="password" class="form-control" placeholder="비밀번호">
+                    <input type="password" id="password" name="mem_Pw" class="form-control" placeholder="비밀번호">
                   </div>
                   <div class="text-center">
-                    <button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">로그인</button>
+                    <button type="submit" id="login" class="btn bg-gradient-primary w-100 my-4 mb-2">로그인</button>
                   </div>
                   <p class="mt-4 text-sm text-center">
                     아직 회원이 아니세요?
-                    <a href="../pages/sign-up.html" class="text-primary text-gradient font-weight-bold">회원가입</a>
+                    <a href="/pages/sign-up" class="text-primary text-gradient font-weight-bold">회원가입</a>
                   </p>
                 </form>
               </div>
@@ -60,7 +61,49 @@
     </div>
   </main>
   <!--   Core JS Files   -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
   <script src="../assets/js/core/bootstrap.min.js"></script>
 </body>
+
+<script type="text/javascript">
+
+$(function(){
+
+	loginForm = $("#loginForm");
+	
+	if("${flag}" == "success"){
+		alert("가입이 완료되었습니다.")
+	}
+
+	if("${flag}" == "no"){
+		alert("존재하지 않는 회원입니다.")
+	}
+	
+	$("#login").on("click", function(){
+		
+		
+		id = $("#id").val();
+		password = $("#password").val();
+		
+		if(id == ""){
+			alert("아이디를 입력해주세요");
+			$("#id").focus();
+			return false;
+		}
+		if(password == ""){
+			alert("비밀번호를 입력해주세요");
+			$("#password").focus();
+			return false;
+		}
+		loginForm.submit()
+		
+	})
+	
+})
+	
+
+</script>
+
+
 
 </html>
