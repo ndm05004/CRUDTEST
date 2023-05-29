@@ -1,6 +1,5 @@
 package kr.or.ddit.vo;
 
-import java.util.Date;
 
 import lombok.Data;
 

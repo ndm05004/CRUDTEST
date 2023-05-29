@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,6 +43,7 @@
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">table_view</i>
             </div>
+            
             <span class="nav-link-text ms-1">공지사항</span>
           </a>
         </li>
@@ -55,12 +58,16 @@
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
           </div>
           <ul class="navbar-nav  justify-content-end">
+          
+          <c:if test="${empty memberVO}">
             <li class="nav-item d-flex align-items-center">
-              <a href="" class="nav-link text-body font-weight-bold px-0">
+              <a href="/login.do" class="nav-link text-body font-weight-bold px-0">
                 <i class="fa fa-user me-sm-1"></i>
                 <span class="d-sm-inline d-none">로그인</span>
               </a>
-            </li>
+            </li> 
+          </c:if>
+            
 			<li class="nav-item d-flex align-items-center">　</li>
 			<li class="nav-item">
 			  <div class="d-flex align-items-center justify-content-between">
@@ -72,17 +79,21 @@
 			<li class="nav-item d-flex align-items-center">　</li>
 			<li class="nav-item d-flex align-items-center">
 				<div class="d-flex flex-column justify-content-center">
-				  <h6 class="mb-0 text-sm">304호반장</h6>
-				  <p class="text-xs text-secondary mb-0">Leader-Park@ddit.or.kr</p>
+				  <h6 class="mb-0 text-sm">${memberVO.mem_Id}</h6>
+				  <p class="text-xs text-secondary mb-0">${memberVO.mem_Email}</p>
 				</div>
 			</li>
+			
 			<li class="nav-item d-flex align-items-center">　</li>
-			<li class="nav-item d-flex align-items-center">
-              <a href="" class="nav-link text-body font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">로그아웃</span>
-              </a>
-            </li>
+			<c:if test="${!empty memberVO}">
+				<li class="nav-item d-flex align-items-center">
+	              <a href="/logout.do" class="nav-link text-body font-weight-bold px-0">
+	                <i class="fa fa-user me-sm-1"></i>
+	                <span class="d-sm-inline d-none">로그아웃</span>
+	              </a>
+	            </li>
+            </c:if>
+            
           </ul>
         </div>
       </div>
@@ -96,9 +107,9 @@
         <div class="row gx-4 mb-2">
 		  <div class="col-md-8">
 		    <div class="h-100">
-              <h5 class="mb-1">제목을 입력해주세요.</h5>
+              <h5 class="mb-1">${board.boTitle }</h5>
               <p class="mb-0 font-weight-normal text-sm">
-                작성일 / 조회수
+              작성자 : ${board.boWriter} / 글번호 : ${board.boNo} / 작성일 : ${board.boDate } / 조회수 : ${board.boHit }
               </p>
             </div>
 		  </div>
@@ -110,13 +121,19 @@
                   <h6 class="mb-0">내용</h6>
                 </div>
                 <div class="card-body p-3">
-				  내용을 입력해주세요.
+				  ${board.boContent}
                 </div>
 				<hr/>
 				<div class="card-footer p-3">
-				  <button type="button" class="btn btn-outline-primary">삭제</button>
-				  <button type="button" class="btn btn-outline-secondary">수정</button>
-				  <button type="button" class="btn btn-outline-success">목록</button>
+				  <c:if test="${memberVO.mem_Id eq board.boWriter}">
+				  	<button type="button"  id="delBtn" class="btn btn-outline-primary">삭제</button>
+				  </c:if>
+				  
+				  <c:if test="${memberVO.mem_Id eq board.boWriter}">
+					  <button type="button" id="updateBtn" class="btn btn-outline-secondary">수정</button>
+				  </c:if>
+				  
+				  <button type="button" id="listBtn" class="btn btn-outline-success">목록</button>
 				</div>
               </div>
             </div>
@@ -147,6 +164,11 @@
         <div>
           <h6 class="mb-0">Sidebar Colors</h6>
         </div>
+        
+          <form action="/board/update.do" method="get" id="nFrm">
+          	<input type="hidden" name="boNo" value="${board.boNo}">
+          </form>
+          
         <a href="javascript:void(0)" class="switch-trigger background-color">
           <div class="badge-colors my-2 text-start">
             <span class="badge filter bg-gradient-primary active" data-color="primary" onclick="sidebarColor(this)"></span>
@@ -156,6 +178,7 @@
             <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
             <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
           </div>
+          
         </a>
         <hr class="horizontal dark my-3">
         <div class="mt-2 d-flex">
@@ -173,6 +196,7 @@
   <script src="../assets/js/core/bootstrap.min.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -186,5 +210,41 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 </body>
+<script type="text/javascript">
 
+	var listBtn = $("#listBtn");
+	var updateBtn = $("#updateBtn");
+	var delBtn= $("#delBtn");
+	var nFrm = $("#nFrm");
+	
+	
+	listBtn.on("click", function(){
+		location.href = "/board/boardList.do";
+	});
+	
+	updateBtn.on("click", function(){
+		// 수정처리(페이지로 이동합니다.)
+		nFrm.submit();
+	});
+	
+	delBtn.on("click", function(){
+		
+		if(confirm("정말 삭제하시겠습니까?")){
+			// 삭제처리
+			nFrm.attr("method", "post");
+			nFrm.attr("action", "/board/delete.do");
+			nFrm.submit();
+		}else{
+			// 삭제 취소
+			nFrm.reset();
+		}
+	});
+	
+	if("${error}" == "fail"){
+		alert("삭제 실패! 다시 시도해주세요")
+	}
+	
+
+
+</script>
 </html>

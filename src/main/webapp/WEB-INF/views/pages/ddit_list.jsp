@@ -55,12 +55,16 @@
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
           </div>
           <ul class="navbar-nav  justify-content-end">
+          
+          <c:if test="${empty memberVO}">
             <li class="nav-item d-flex align-items-center">
-              <a href="" class="nav-link text-body font-weight-bold px-0">
+              <a href="/login.do" class="nav-link text-body font-weight-bold px-0">
                 <i class="fa fa-user me-sm-1"></i>
                 <span class="d-sm-inline d-none">로그인</span>
               </a>
-            </li>
+            </li> 
+          </c:if>
+            
 			<li class="nav-item d-flex align-items-center">　</li>
 			<li class="nav-item">
 			  <div class="d-flex align-items-center justify-content-between">
@@ -76,13 +80,17 @@
 				  <p class="text-xs text-secondary mb-0">${memberVO.mem_Email}</p>
 				</div>
 			</li>
+			
 			<li class="nav-item d-flex align-items-center">　</li>
-			<li class="nav-item d-flex align-items-center">
-              <a href="" class="nav-link text-body font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">로그아웃</span>
-              </a>
-            </li>
+			<c:if test="${!empty memberVO}">
+				<li class="nav-item d-flex align-items-center">
+	              <a href="/logout.do" class="nav-link text-body font-weight-bold px-0">
+	                <i class="fa fa-user me-sm-1"></i>
+	                <span class="d-sm-inline d-none">로그아웃</span>
+	              </a>
+	            </li>
+            </c:if>
+            
           </ul>
         </div>
       </div>
@@ -104,29 +112,31 @@
 				</div>
 				
 				
-				<div class="col-md-1">
-				  <div class="input-group input-group-static mb-4">
-					 <select class="form-control" id="exampleFormControlSelect1">
-					   <option>제목</option>
-					   <option>작성자</option>
-					 </select>
-				   </div>
-				</div>
-				
-				
-				
-				<div class="col-md-3">
-				  <div class="ms-md-auto">
-					<form class="input-group input-group-outline">
-					  <label class="form-label"></label>
-					  <input type="text" class="form-control">
-					</form>
-				  </div>
-				</div>
-				<div class="col-md-2">
-				  <button type="button" class="btn btn-outline-secondary">검색</button>
-				</div>
-				
+				<form class="input-group input-group-outline" method="post" id="searchForm">
+					<input type="hidden" name="page", id="page">
+					<div class="col-md-1">
+					  <div class="input-group input-group-static mb-4">
+						 <select class="form-control" id="exampleFormControlSelect1">
+							<option value="title" <c:if test="${searchType == 'title' }"><c:out value="selected"/></c:if>>제목</option>
+							<option value="writer" <c:if test="${searchType == 'writer' }"><c:out value="selected"/></c:if>>작성자</option>
+							<option value="titleWriter" <c:if test="${searchType == 'titleWriter' }"><c:out value="selected"/></c:if>>제목+작성자</option>
+						 </select>
+					   </div>
+					</div>
+
+					
+					<div class="col-md-3">
+					  <div class="ms-md-auto">
+						  <label class="form-label"></label>
+						  <input type="text" name="searchWord" class="form-control" value="${searchWord }" placeholder="Search">
+					  </div>
+					</div>
+					<div class="col-md-2">				  
+					  <button type="submit" class="btn btn-outline-secondary">
+						<i class="fas fa=search"></i>검색
+					  </button>
+					</div>
+				</form>
 				
 			  </div>
 			</div>
@@ -169,35 +179,15 @@
 					</c:choose>
 
                 </table>
+	              <br><br>
+	              <button type="button" id="newBtn" class="btn btn-primary">등록</button>
               </div>
             </div>
            <div class="card-footer clearfix" id="pagingArea">
 				${pagingVO.pagingHTML }
 									
 			</div>
-<!-- 			<nav aria-label="Page navigation example">
-			  <ul class="pagination justify-content-center">
-				<li class="page-item disabled">
-				  <a class="page-link" href="javascript:;" tabindex="-1">
-					<span class="material-icons">
-					  keyboard_arrow_left
-					</span>
-					<span class="sr-only">Previous</span>
-				  </a>
-				</li>
-				<li class="page-item"><a class="page-link" href="javascript:;">1</a></li>
-				<li class="page-item active"><a class="page-link" href="javascript:;">2</a></li>
-				<li class="page-item"><a class="page-link" href="javascript:;">3</a></li>
-				<li class="page-item">
-				  <a class="page-link" href="javascript:;">
-					<span class="material-icons">
-					  keyboard_arrow_right
-					</span>
-					<span class="sr-only">Next</span>
-				  </a>
-				</li>
-			  </ul>
-			</nav> -->
+
           </div>
         </div>
       </div>
@@ -252,7 +242,9 @@
   <script src="../assets/js/core/bootstrap.min.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
   <script>
+
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
       var options = {
@@ -265,5 +257,31 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 </body>
+
+<script type="text/javascript">
+$(function(){
+	var newBtn = $("#newBtn");
+	var searchForm = $("#searchForm");
+	var pagingArea = $("#pagingArea");
+	
+	pagingArea.on("click", "a", function(event){
+		event.preventDefault();
+		var pageNo = $(this).data("page");
+		searchForm.find("#page").val(pageNo);
+		searchForm.submit();
+	});
+
+	newBtn.on("click", function(){
+		location.href = "/board/form.do";
+	});
+
+})
+
+
+</script>
+
+
+
+
 
 </html>

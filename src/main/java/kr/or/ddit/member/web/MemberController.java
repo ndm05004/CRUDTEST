@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class MemberController {
+	
 	@Inject
 	IMemberService service;
 
@@ -29,7 +30,21 @@ public class MemberController {
 		return "pages/ddit_signin";
 	}
 	
+	@RequestMapping(value = "/login.do", method = RequestMethod.GET)
+	public String login() {
+		
+		return "pages/ddit_signin";
+	}
+	
+	@RequestMapping(value = "/logout.do", method = RequestMethod.GET)
+	public String logout(HttpSession session) {
+		
 
+		session.removeAttribute("memberVO");
+		session.invalidate();
+		
+		return "pages/ddit_signin";
+	}
 	
 	
 	@RequestMapping(value = "/pages/sign-up", method = RequestMethod.GET)

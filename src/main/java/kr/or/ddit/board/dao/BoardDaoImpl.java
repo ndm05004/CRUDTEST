@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import kr.or.ddit.vo.BoardVO;
 import kr.or.ddit.vo.PaginationInfoVO;
 
+
 @Repository
 public class BoardDaoImpl implements IBoardrDao {
 
@@ -56,5 +57,7 @@ public class BoardDaoImpl implements IBoardrDao {
 	public List<BoardVO> selectBoardList(PaginationInfoVO<BoardVO> pagingVO) {
 		return sqlSession.selectList("Board.selectBoardList2", pagingVO);
 	}
+
+
 
 }

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+    
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,6 +12,14 @@
   <title>
     대덕인재개발원 CRUD 연습
   </title>
+  
+  <c:set value="등록" var ="name"></c:set>
+  
+  <c:if test="${status eq 'u' }">
+  		<c:set value="수정" var="name"/>
+  </c:if>
+  
+  
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
   <!-- Nucleo Icons -->
@@ -55,12 +65,16 @@
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
           </div>
           <ul class="navbar-nav  justify-content-end">
+          
+          <c:if test="${empty memberVO}">
             <li class="nav-item d-flex align-items-center">
-              <a href="" class="nav-link text-body font-weight-bold px-0">
+              <a href="/login.do" class="nav-link text-body font-weight-bold px-0">
                 <i class="fa fa-user me-sm-1"></i>
                 <span class="d-sm-inline d-none">로그인</span>
               </a>
-            </li>
+            </li> 
+          </c:if>
+            
 			<li class="nav-item d-flex align-items-center">　</li>
 			<li class="nav-item">
 			  <div class="d-flex align-items-center justify-content-between">
@@ -72,55 +86,77 @@
 			<li class="nav-item d-flex align-items-center">　</li>
 			<li class="nav-item d-flex align-items-center">
 				<div class="d-flex flex-column justify-content-center">
-				  <h6 class="mb-0 text-sm">304호반장</h6>
-				  <p class="text-xs text-secondary mb-0">Leader-Park@ddit.or.kr</p>
+				  <h6 class="mb-0 text-sm">${memberVO.mem_Id}</h6>
+				  <p class="text-xs text-secondary mb-0">${memberVO.mem_Email}</p>
 				</div>
 			</li>
+			
 			<li class="nav-item d-flex align-items-center">　</li>
-			<li class="nav-item d-flex align-items-center">
-              <a href="" class="nav-link text-body font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">로그아웃</span>
-              </a>
-            </li>
-			<li class="nav-item d-flex align-items-center">　</li>
-			<li class="nav-item d-flex align-items-center">
-              <a href="" class="nav-link text-body font-weight-bold px-0">
-                <i class="fa fa-user me-sm-1"></i>
-                <span class="d-sm-inline d-none">마이페이지</span>
-              </a>
-            </li>
+			<c:if test="${!empty memberVO}">
+				<li class="nav-item d-flex align-items-center">
+	              <a href="/logout.do" class="nav-link text-body font-weight-bold px-0">
+	                <i class="fa fa-user me-sm-1"></i>
+	                <span class="d-sm-inline d-none">로그아웃</span>
+	              </a>
+	            </li>
+            </c:if>
+            
           </ul>
         </div>
       </div>
     </nav>
     <!-- End Navbar -->
-    <div class="container-fluid px-2 px-md-4">
-      <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
-        <span class="mask  bg-gradient-secondary opacity-6"></span>
-      </div>
-      <div class="card card-body mx-3 mx-md-4 mt-n6">
-        <div class="row gx-4 mb-2">
-		  <div class="col-md-12">
-			<div class="input-group input-group-outline mb-4">
-			  <label class="form-label">제목을 입력해주세요.</label>
-			  <input type="text" class="form-control">
-			</div>
-		  </div>
-		  <div class="col-md-12">
-		    <div class="input-group input-group-outline mb-4">
-			  <textarea class="form-control" rows="20"></textarea>
-		    </div>
-		  </div>
-		  <div class="col-md-12">　</div>
-		  <div class="col-md-12">
-		    <button type="button" class="btn btn-primary">등록</button>
-		    <button type="button" class="btn btn-danger">취소</button>
-		    <button type="button" class="btn btn-info">목록</button>
-		  </div>
-        </div>
-      </div>
-    </div>
+    
+    <form action="/board/insert.do" id="boardForm" method="post">
+	    <div class="container-fluid px-2 px-md-4">
+	      <div class="page-header min-height-300 border-radius-xl mt-4" style="background-image: url('https://images.unsplash.com/photo-1531512073830-ba890ca4eba2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');">
+	        <span class="mask  bg-gradient-secondary opacity-6"></span>
+	      </div>
+	      <div class="card card-body mx-3 mx-md-4 mt-n6">
+	        <div class="row gx-4 mb-2">
+			  <div class="col-md-12">
+				<div class="input-group input-group-outline mb-4">
+				  <input type="hidden" name="boWriter" value="${memberVO.mem_Id}">
+				  <label class="form-label"></label>
+				  <input type="text" placeholder="제목을 입력해주세요." name="boTitle" value="${board.boTitle}" class="form-control">
+				</div>
+			  </div>
+			  <div class="col-md-12">
+			    <div class="input-group input-group-outline mb-4">
+				  <textarea class="form-control" name="boContent"  rows="20">${board.boContent}</textarea>
+			    </div>
+			  </div>
+			  <div class="col-md-12">　</div>
+			  <div class="col-md-12">
+			  
+			 	<input type="button" value="${name }" id="formBtn" class="btn btn-primary">
+			    
+			    <c:if test="${status eq 'u' }">
+			    	<a href="/board/detail.do?boNo=${board.boNo }">
+			    		<input type="button" class="btn btn-danger" value="취소">
+			    	</a>
+			    </c:if>
+			   
+			    <c:if test="${status ne 'u' }">
+					<a href="/board/boardList.do">
+						<input type="button" value="목록" class="btn btn-info">
+					</a>
+				</c:if>
+			    
+			  </div>
+	        </div>
+	      </div>
+	    </div>
+    </form>
+    
+   	<c:if test="${not empty errors }">
+		<p>
+			${errors.boTitle }<br>
+			${errors.boContent}<br>
+			${errors.bomsg }
+		</p>
+	</c:if>
+	
   </main>
   <div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
@@ -171,6 +207,9 @@
   <script src="../assets/js/core/bootstrap.min.js"></script>
   <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="${pageContext.request.contextPath}/resources/ckeditor/ckeditor.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+ 
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -184,5 +223,44 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
 </body>
+
+<script>
+$(function(){
+	CKEDITOR.replace("boContent");
+	CKEDITOR.config.allowedContent = true 
+	
+	var formBtn = $("#formBtn");
+	
+	formBtn.on("click", function(){
+		var title= $("#boTitle").val();		
+		var content= CKEDITOR.instances.boContent.getData(); 
+		
+		if(title == ""){
+			alert("제목을 입력해주세요!");
+			$("#boTitle").focus();
+			return false;
+		}
+		
+		if(title == ""){
+			alert("내용을 입력해주세요!");
+			$("#boContent").focus();
+			return false;
+		}
+		
+		if($(this).val() == "수정"){
+			$("#boardForm").attr("action", "/board/update.do"); 
+		}
+		
+		
+		$("#boardForm").submit();
+		
+	});
+	
+
+});
+
+</script>
+
+
 
 </html>
